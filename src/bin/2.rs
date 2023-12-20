@@ -27,10 +27,11 @@ fn compute_result<'a, T: Iterator<Item = &'a String>>(lines: T) -> (u32, u32) {
             };
 
             for capture in regex_cubes.captures_iter(item) {
+                let num = capture["num"].parse::<u32>().unwrap();
                 match &capture["color"] {
-                    "blue" => draw.blue += capture["num"].parse::<u32>().unwrap(),
-                    "red" => draw.red += capture["num"].parse::<u32>().unwrap(),
-                    "green" => draw.green += capture["num"].parse::<u32>().unwrap(),
+                    "blue" => draw.blue += num,
+                    "red" => draw.red += num,
+                    "green" => draw.green += num,
                     _ => panic!("Unknown color"),
                 }
             }
