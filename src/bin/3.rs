@@ -45,14 +45,20 @@ fn scan_symbol(input: &[u8]) -> (bool, Option<usize>) {
     (symbol_found, gear)
 }
 
-fn update_gears(gears: &mut HashMap<(u32, u32), (u32, u32)>, gear_row: u32, gear_column: u32, number: u32) {
+fn update_gears(
+    gears: &mut HashMap<(u32, u32), (u32, u32)>,
+    gear_row: u32,
+    gear_column: u32,
+    number: u32,
+) {
     let gear_key = (gear_row, gear_column);
-    if let Some((number_of_numbers, ratio)) = gears.get_mut(&gear_key) {
-        *ratio *= number;
-        *number_of_numbers += 1;
-    } else {
-        gears.insert(gear_key, (1, number));
-    }
+    gears
+        .entry(gear_key)
+        .and_modify(|(number_of_numbers, ratio)| {
+            *ratio *= number;
+            *number_of_numbers += 1;
+        })
+        .or_insert((1, number));
 }
 
 fn compute_results(input: &Vec<String>) -> (u32, u32) {
@@ -73,9 +79,9 @@ fn compute_results(input: &Vec<String>) -> (u32, u32) {
             } else if let Some((number, n_digits)) = scan_number(&current_line[j..]) {
                 let left_symbol = if j > 0 {
                     // Scan symbol for 1 byte to the left
-                    let (symbol, gear) = scan_symbol(&current_line[j-1..j]);
+                    let (symbol, gear) = scan_symbol(&current_line[j - 1..j]);
                     if gear.is_some() {
-                        update_gears(&mut gears, i as u32, (j-1) as u32, number);
+                        update_gears(&mut gears, i as u32, (j - 1) as u32, number);
                     }
                     symbol
                 } else {
@@ -86,7 +92,7 @@ fn compute_results(input: &Vec<String>) -> (u32, u32) {
                     // Scan symbol for 1 byte to the right
                     let (symbol, gear) = scan_symbol(&current_line[j + n_digits..j + n_digits + 1]);
                     if gear.is_some() {
-                        update_gears(&mut gears, i as u32, (j+n_digits) as u32, number);
+                        update_gears(&mut gears, i as u32, (j + n_digits) as u32, number);
                     }
                     symbol
                 } else {
@@ -101,9 +107,15 @@ fn compute_results(input: &Vec<String>) -> (u32, u32) {
                     } else {
                         j + n_digits
                     };
-                    let (symbol, gear) = scan_symbol(&input[i - 1].as_bytes()[starting_column..ending_column]);
+                    let (symbol, gear) =
+                        scan_symbol(&input[i - 1].as_bytes()[starting_column..ending_column]);
                     if let Some(gear_idx) = gear {
-                        update_gears(&mut gears, (i-1) as u32, (starting_column + gear_idx) as u32, number);
+                        update_gears(
+                            &mut gears,
+                            (i - 1) as u32,
+                            (starting_column + gear_idx) as u32,
+                            number,
+                        );
                     }
                     symbol
                 } else {
@@ -118,9 +130,15 @@ fn compute_results(input: &Vec<String>) -> (u32, u32) {
                     } else {
                         j + n_digits
                     };
-                    let (symbol, gear) = scan_symbol(&input[i + 1].as_bytes()[starting_column..ending_column]);
+                    let (symbol, gear) =
+                        scan_symbol(&input[i + 1].as_bytes()[starting_column..ending_column]);
                     if let Some(gear_idx) = gear {
-                        update_gears(&mut gears, (i+1) as u32, (starting_column + gear_idx) as u32, number);
+                        update_gears(
+                            &mut gears,
+                            (i + 1) as u32,
+                            (starting_column + gear_idx) as u32,
+                            number,
+                        );
                     }
                     symbol
                 } else {
@@ -144,7 +162,11 @@ fn compute_results(input: &Vec<String>) -> (u32, u32) {
     }
 
     // Sum of ration in gears that have more than 1 adjacent numbers
-    let gear_ratio = gears.iter().filter(|(_, (n, _))| *n > 1).map(|(_, (_, ratio))| ratio).sum::<u32>();
+    let gear_ratio = gears
+        .iter()
+        .filter(|(_, (n, _))| *n > 1)
+        .map(|(_, (_, ratio))| ratio)
+        .sum::<u32>();
 
     (sum, gear_ratio)
 }
