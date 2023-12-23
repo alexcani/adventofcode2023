@@ -65,18 +65,18 @@ fn compute_result<'a, T: Iterator<Item = &'a String>>(lines: T) -> (u32, u32) {
 }
 
 fn main() {
-    let lines = read_lines("inputs/2.txt").unwrap();
+    let _lines = read_lines("inputs/2.txt").unwrap();
 
-    // let data = vec![
-    //     "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
-    //     "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
-    //     "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red",
-    //     "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
-    //     "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
-    // ].into_iter().map(|s| s.to_string()).collect::<Vec<String>>();
+    let _data = vec![
+        "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
+        "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
+        "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red",
+        "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
+        "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
+    ].into_iter().map(|s| s.to_string()).collect::<Vec<String>>();
 
 
-    let (sum_of_ids, sum_of_powers) = compute_result(lines.flatten().collect::<Vec<String>>().iter());
+    let (sum_of_ids, sum_of_powers) = compute_result(_lines.flatten().collect::<Vec<String>>().iter());
     println!("Sum of ids: {}", sum_of_ids);
     println!("Sum of powers: {}", sum_of_powers);
 }

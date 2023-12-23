@@ -172,9 +172,9 @@ fn compute_results(input: &Vec<String>) -> (u32, u32) {
 }
 
 fn main() {
-    let lines = read_lines_as_vec("inputs/3.txt").unwrap();
+    let _lines = read_lines_as_vec("inputs/3.txt").unwrap();
 
-    let example = vec![
+    let _example = vec![
         "467..114..",
         "...*......",
         "..35..633.",
@@ -190,7 +190,7 @@ fn main() {
     .map(|s| s.to_string())
     .collect::<Vec<String>>();
 
-    let (part_numbers, gear_ratio) = compute_results(&lines);
+    let (part_numbers, gear_ratio) = compute_results(&_lines);
 
     println!("Part numbers: {}", part_numbers);
     println!("Gear ratios: {}", gear_ratio);

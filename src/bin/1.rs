@@ -77,11 +77,11 @@ fn calculate_sum_with_words<'a, T: Iterator<Item = &'a String>>(lines: T) -> u32
 fn main() {
     let lines = read_lines("inputs/1.txt").unwrap();
 
-    let lines: Vec<String> = lines.flatten().collect();
+    let _lines: Vec<String> = lines.flatten().collect();
 
-    let sum = calculate_sum(lines.iter());
+    let sum = calculate_sum(_lines.iter());
 
-    let example = vec![
+    let _example = vec![
         "two1nine".to_string(),
         "eightwothree".to_string(),
         "abcone2threexyz".to_string(),
@@ -94,7 +94,7 @@ fn main() {
         "twor934onetwo".to_string(),
     ];
 
-    let sum_words = calculate_sum_with_words(lines.iter());
+    let sum_words = calculate_sum_with_words(_lines.iter());
 
     println!("{}", sum);
     println!("{}", sum_words);
