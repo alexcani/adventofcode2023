@@ -22,12 +22,50 @@ impl FromIterator<u64> for Map {
     }
 }
 
+#[derive(Debug)]
+struct Range {
+    start: u64,
+    length: u64,
+}
+
+impl FromIterator<u64> for Range {
+    fn from_iter<I: IntoIterator<Item = u64>>(iter: I) -> Self {
+        let mut iter = iter.into_iter();
+        let start = iter.next().unwrap();
+        let length = iter.next().unwrap();
+
+        Range {
+            start,
+            length,
+        }
+    }
+}
+
+impl Range {
+    fn contains(&self, value: u64) -> bool {
+        value >= self.start && value < self.start + self.length
+    }
+}
+
 // Applies a mapping to an input
 fn use_map(input: u64, map: &Vec<Map>) -> u64 {
     // Iterates over all maps and check if input falls within the range
     for m in map {
         if input >= m.source_start && input < m.source_start + m.length {
             return input - m.source_start + m.destination_start;
+        }
+    }
+
+    // If no map is found, return the input
+    input
+}
+
+// Given an output, find which input would produce it
+fn use_map_inverse(input: u64, map: &Vec<Map>) -> u64 {
+    // Iterates over all maps and check if input falls within the range
+    for m in map {
+        if input >= m.destination_start && input < m.destination_start + m.length {
+            return m.source_start + input - m.destination_start;
         }
     }
 
@@ -47,7 +85,7 @@ enum NextStep {
     Location,
 }
 
-fn calculate_result(input: &Vec<String>) -> u64 {
+fn calculate_result(input: &Vec<String>) -> (u64, u64) {
     let mut seed_to_soil = Vec::new();
     let mut soil_to_fertilizer = Vec::new();
     let mut fertilizer_to_water = Vec::new();
@@ -101,7 +139,7 @@ fn calculate_result(input: &Vec<String>) -> u64 {
     }
 
     // Iterate over seeds and apply all maps
-    let mut lowest_location = u64::MAX;
+    let mut lowest_location_p1 = u64::MAX;
     for seed in seeds {
         let soil = use_map(seed, &seed_to_soil);
         let fertilizer = use_map(soil, &soil_to_fertilizer);
@@ -111,12 +149,41 @@ fn calculate_result(input: &Vec<String>) -> u64 {
         let humidity = use_map(temperature, &temperature_to_humidity);
         let location = use_map(humidity, &humidity_to_location);
 
-        if location < lowest_location {
-            lowest_location = location;
+        if location < lowest_location_p1 {
+            lowest_location_p1 = location;
         }
     }
 
-    lowest_location
+    // Parse seeds as ranges - Problem 2
+    let seeds: Vec<Range> = input[0]
+        .split_whitespace()
+        .filter_map(|s| s.parse::<u64>().ok()).collect::<Vec<u64>>()
+        .chunks(2).map(|x| x.iter().cloned().collect::<Range>())
+        .collect();
+
+    // Start from location = 0 and apply all maps in reverse until we reach a seed that is in the parsed ranges
+    println!("Calculating problem 2");
+    let mut location = 0;
+    let lowest_location_p2 = loop {
+        let humidity = use_map_inverse(location, &humidity_to_location);
+        let temperature = use_map_inverse(humidity, &temperature_to_humidity);
+        let light = use_map_inverse(temperature, &light_to_temperature);
+        let water = use_map_inverse(light, &water_to_light);
+        let fertilizer = use_map_inverse(water, &fertilizer_to_water);
+        let soil = use_map_inverse(fertilizer, &soil_to_fertilizer);
+        let seed = use_map_inverse(soil, &seed_to_soil);
+
+        // Check if seed is in the ranges
+        let seed_in_range = seeds.iter().any(|s| s.contains(seed));
+        if seed_in_range {
+            break location;
+        }
+
+        location += 1;
+    };
+
+
+    (lowest_location_p1, lowest_location_p2)
 }
 
 fn main() {
@@ -158,7 +225,9 @@ fn main() {
         "56 93 4",
     ].into_iter().map(|s| s.to_owned()).collect::<Vec<String>>();
 
-    let lowest_location = calculate_result(&_input);
+    let (lowest_location, lowest_location_p2) = calculate_result(&_input);
     println!("Lowest location: {:?}", lowest_location);
+    println!("Lowest location p2: {:?}", lowest_location_p2);
+
 
 }
