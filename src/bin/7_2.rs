@@ -2,10 +2,13 @@ use std::collections::BTreeSet;
 
 use advent_of_code_2023::read_lines_as_vec;
 use itertools::Itertools;
+use strum::IntoEnumIterator;
 
 #[derive(Copy, Clone, PartialEq, PartialOrd, Debug)]
+#[derive(strum_macros::EnumIter)]
 enum Cards {
-    Two = 0,
+    J = 0,
+    Two,
     Three,
     Four,
     Five,
@@ -14,13 +17,12 @@ enum Cards {
     Eight,
     Nine,
     T,
-    J,
     Q,
     K,
     A,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 struct Hand{
     // Five cards
     cards: [Cards; 5],
@@ -87,6 +89,27 @@ impl PartialEq for Game {
 fn identify_hand(hand: &Hand) -> HandTypes {
     let mut counts = [0u32; 13];
 
+    // Count number of J
+    let js = hand.cards.iter().filter(|&&card| card == Cards::J).count();
+    if js > 0 {
+        let mut highest_hand_type = HandTypes::HighCard;
+        // Replace J with each of the other cards and call the function again
+        for card in Cards::iter() {
+            if card == Cards::J {
+                continue;
+            }
+
+            let mut new_hand = *hand;
+            new_hand.cards.iter_mut().for_each(|c| if *c == Cards::J { *c = card; });
+            let hand_type = identify_hand(&new_hand);
+            if hand_type > highest_hand_type {
+                highest_hand_type = hand_type;
+            }
+        }
+
+        return highest_hand_type;
+    }
+
     // Count the occurrences of each label
     for card in &hand.cards {
         counts[*card as usize] += 1;
@@ -119,6 +142,7 @@ fn calculate_result(input: &Vec<String>) -> u32 {
 
         // Iterate over the 5 characters of the hand and convert them to Cards
         let hand = hand.chars().map(|c| match c {
+            'J' => Cards::J,
             '2' => Cards::Two,
             '3' => Cards::Three,
             '4' => Cards::Four,
@@ -128,7 +152,6 @@ fn calculate_result(input: &Vec<String>) -> u32 {
             '8' => Cards::Eight,
             '9' => Cards::Nine,
             'T' => Cards::T,
-            'J' => Cards::J,
             'Q' => Cards::Q,
             'K' => Cards::K,
             'A' => Cards::A,
@@ -147,7 +170,6 @@ fn calculate_result(input: &Vec<String>) -> u32 {
     // Iterate over ordered games and calculate winnings
     let mut winnings = 0;
     for (rank, game) in games.iter().enumerate() {
-        //println!("{} - {:?} {:?}", rank+1, game.hand.0.cards, game.hand.1);
         winnings += game.bid * (rank + 1) as u32;
     }
 
