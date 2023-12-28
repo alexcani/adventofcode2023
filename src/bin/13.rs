@@ -158,7 +158,10 @@ fn main() {
     .map(|x| x.to_string())
     .collect::<Vec<_>>();
 
+    let start = std::time::Instant::now();
     let (r1, r2) = solve(&_lines);
+    let elapsed = start.elapsed();
     println!("Part 1: {}", r1);
     println!("Part 2: {}", r2);
+    println!("Elapsed: {:?}", elapsed);
 }
