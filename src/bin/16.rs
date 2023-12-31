@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use advent_of_code_2023::read_lines_as_vec;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -150,6 +152,7 @@ fn solve(lines: &[String]) -> (u32, u32) {
 
     let part1 = process(&grid, (0, 0, Direction::Right));
 
+    let start = Instant::now();
     // Part 2 - Beam can start from any point in the border, find maximum value of energied tiles
     let top = (0..grid[0].len()).map(|c| (0, c, Direction::Down));  // Along top border
     let bottom = (0..grid[0].len()).map(|c| (grid.len() - 1, c, Direction::Up));  // Along bottom border
@@ -157,6 +160,8 @@ fn solve(lines: &[String]) -> (u32, u32) {
     let right = (0..grid.len()).map(|r| (r, grid[0].len() - 1, Direction::Left));  // Along right border
 
     let part2 = top.chain(bottom).chain(left).chain(right).map(|b| process(&grid, b)).max().unwrap();
+    let end = start.elapsed();
+    println!("Part 2 took: {:?}", end);
     (part1, part2)
 }
 
