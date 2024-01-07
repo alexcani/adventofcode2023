@@ -1,3 +1,8 @@
+pub mod util {
+    pub mod grid;
+    pub mod point;
+}
+
 use std::fs::File;
 use std::io::{self, BufRead};
 
