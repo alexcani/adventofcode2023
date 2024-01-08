@@ -1,7 +1,6 @@
 use advent_of_code_2023::read_lines_as_vec;
 use std::collections::HashMap;
 use nalgebra::DMatrix;
-//use nalgebra::{Field, ComplexField};
 
 struct Input {
     adjacency_matrix: DMatrix<f32>,
