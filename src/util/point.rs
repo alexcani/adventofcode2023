@@ -20,18 +20,18 @@ pub const DIAGONALS: [Point; 8] = [
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub struct Point {
-    pub x: i32,
-    pub y: i32,
+    pub x: i64,
+    pub y: i64,
 }
 
 impl Point {
-    pub const fn new(x: i32, y: i32) -> Self {
+    pub const fn new(x: i64, y: i64) -> Self {
         Point { x, y }
     }
 
     #[inline]
     #[must_use]
-    pub fn manhattan_distance(&self, other: &Self) -> i32 {
+    pub fn manhattan_distance(&self, other: &Self) -> i64 {
         (self.x - other.x).abs() + (self.y - other.y).abs()
     }
 
@@ -96,12 +96,12 @@ impl SubAssign for Point {
     }
 }
 
-impl Mul<i32> for Point {
+impl Mul<i64> for Point {
     type Output = Self;
 
     #[inline]
     #[must_use]
-    fn mul(self, rhs: i32) -> Self::Output {
+    fn mul(self, rhs: i64) -> Self::Output {
         Point::new(self.x * rhs, self.y * rhs)
     }
 }

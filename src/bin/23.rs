@@ -21,8 +21,8 @@ struct Puzzle {
 
 fn parse(input: &[String]) -> Puzzle {
     let mut grid = Grid::parse(input);
-    let width = grid.width as i32;
-    let height = grid.height as i32;
+    let width = grid.width as i64;
+    let height = grid.height as i64;
 
     // To make things easier we'll replace start and end points with # and add the cost later
     // This allows us to not check for any boundaries
@@ -230,6 +230,6 @@ fn main() {
 
     let now = std::time::Instant::now();
     let r2 = part2(&map);
-    println!("Part 2 took {}us", now.elapsed().as_micros());
+    println!("Part 2 took {}ms", now.elapsed().as_millis());
     println!("Part 2: {}", r2);
 }

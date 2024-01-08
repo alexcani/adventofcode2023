@@ -36,14 +36,14 @@ impl Grid<u8> {
 impl<T: PartialEq> Grid<T> {
     #[inline]
     pub fn contains(&self, point: Point) -> bool {
-        point.x >= 0 && point.x < self.width as i32 && point.y >= 0 && point.y < self.height as i32
+        point.x >= 0 && point.x < self.width as i64 && point.y >= 0 && point.y < self.height as i64
     }
 
     pub fn find(&self, needle: &T) -> Option<Point> {
         self.data
             .iter()
             .position(|x| x == needle)
-            .map(|i| Point::new((i % self.width) as i32, (i / self.width) as i32))
+            .map(|i| Point::new((i % self.width) as i64, (i / self.width) as i64))
     }
 }
 
