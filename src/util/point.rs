@@ -1,24 +1,24 @@
 use std::ops::{Add, AddAssign, Sub, SubAssign, Mul};
 
 pub const ORIGIN: Point = Point::new(0, 0);
-pub const UP: Point = Point::new(0, 1);
-pub const DOWN: Point = Point::new(0, -1);
+pub const UP: Point = Point::new(0, -1);
+pub const DOWN: Point = Point::new(0, 1);
 pub const LEFT: Point = Point::new(-1, 0);
 pub const RIGHT: Point = Point::new(1, 0);
 pub const ORTHOGONALS: [Point; 4] = [UP, DOWN, LEFT, RIGHT];
 // Left to right, top to bottom
 pub const DIAGONALS: [Point; 8] = [
-    Point::new(-1, 1),
-    UP,
-    Point::new(1, 1),
-    RIGHT,
-    Point::new(1, -1),
-    DOWN,
     Point::new(-1, -1),
+    UP,
+    Point::new(1, -1),
     LEFT,
+    RIGHT,
+    Point::new(-1, 1),
+    DOWN,
+    Point::new(1, 1),
 ];
 
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub struct Point {
     pub x: i32,
     pub y: i32,

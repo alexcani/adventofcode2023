@@ -1,5 +1,6 @@
 use crate::util::point::*;
 use std::ops::{Index, IndexMut};
+use std::fmt::Display;
 
 pub struct Grid<T> {
     pub width: usize,
@@ -59,5 +60,17 @@ impl<T> IndexMut<Point> for Grid<T> {
     #[inline]
     fn index_mut(&mut self, index: Point) -> &mut Self::Output {
         &mut self.data[index.y as usize * self.width + index.x as usize]
+    }
+}
+
+impl Display for Grid<u8> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for y in 0..self.height {
+            for x in 0..self.width {
+                write!(f, "{}", self.data[y*self.width + x] as char)?;
+            }
+            writeln!(f)?;
+        }
+        Ok(())
     }
 }
